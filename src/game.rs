@@ -2,11 +2,13 @@ use std::error::Error;
 
 use crate::player::{Board, Cell, Index, Player, Position};
 
+const MAX_PLAYERS: usize = 2;
+
 #[derive(Debug)]
 struct GameInfo {
     board_size: usize,
     num_ships: u32,
-    players: [Player; 2],
+    players: [Player; MAX_PLAYERS],
     turn: usize,
     is_running: bool,
 }
@@ -124,13 +126,11 @@ impl Game {
         let game_info = self.game_info.as_mut().unwrap();
         println!("BattleCrab Game Begins! \n");
         while game_info.is_running {
-            {
-                let cur_player = &game_info.players[game_info.turn % 2];
+            let cur_player = &game_info.players[game_info.turn % MAX_PLAYERS];
 
-                println!("{}'s turn", cur_player.name);
-                println!("{}'s board: \n", cur_player.name);
-                println!("{}", cur_player.board);
-            }
+            println!("{}'s turn", cur_player.name);
+            println!("{}'s board: \n", cur_player.name);
+            println!("{}", cur_player.board);
             let opposite_player = &mut game_info.players[(game_info.turn + 1) % 2];
 
             println!("{}'s board: \n", opposite_player.name);
@@ -158,7 +158,7 @@ impl Game {
 
             // Check if winer
             if opposite_player.valid_ship_count == 0 {
-                let cur_player = &game_info.players[game_info.turn % 2];
+                let cur_player = &game_info.players[game_info.turn % MAX_PLAYERS];
                 println!("{} wins!", cur_player.name);
                 game_info.is_running = false;
                 break;
